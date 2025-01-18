@@ -28,6 +28,7 @@ pipeline {
                 script {
                     // Run tests inside the Docker container
                     docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").inside {
+                        // Adjust the path to Unix-style for Docker on Windows
                         sh 'pytest tests/'  // Replace with your test command
                     }
                 }
@@ -48,6 +49,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    // Ensure Docker commands are in Unix-style paths
                     // Stop and remove the existing container
                     sh 'docker stop flask-api-container || true'
                     sh 'docker rm flask-api-container || true'
