@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from GitHub
-                git credentialsId: 'github-credentials', url: 'https://github.com/sofikul-git/Bank_Details_API-Docker-Pipeline.git'
+                git credentialsId: 'github-credentials', url: 'https://github.com/sofikul-git/Bank_Details_API-Docker-Pipeline.git', branch: 'main'
             }
         }
 
@@ -39,9 +39,8 @@ pipeline {
                 script {
                     // Push the image to Docker Hub
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
-                  }
-
+                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                    }
                 }
             }
         }
