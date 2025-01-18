@@ -26,9 +26,9 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Run tests inside the Docker container
+                    // Use Docker with the correct Unix-style path
                     docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").inside {
-                        // Adjust the path to Unix-style for Docker on Windows
+                        // Running tests inside the container, using Unix-style paths for volumes and working directory
                         sh 'pytest tests/'  // Replace with your test command
                     }
                 }
@@ -49,13 +49,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Ensure Docker commands are in Unix-style paths
                     // Stop and remove the existing container
                     sh 'docker stop flask-api-container || true'
                     sh 'docker rm flask-api-container || true'
 
-                    // Run the new Docker container
-                    sh "docker run -d --name flask-api-container -p 8080:8080 ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    // Run the new Docker container with corrected paths
+                    // Convert Windows path to Unix style for Docker to understand
+                    sh """docker run -d --name flask-api-container -p 8080:8080 -v /c/ProgramData/Jenkins/.jenkins/workspace/Bank_Details_API_CI_CD:/workspace ${DOCKER_IMAGE}:${DOCKER_TAG} bash -c 'cd /workspace && python app.py'"""
                 }
             }
         }
