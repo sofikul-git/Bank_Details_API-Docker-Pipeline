@@ -46,9 +46,9 @@ pipeline {
                     // Run the Docker container with the new image, bind to all available network interfaces
                     bat "docker run -d --name flask-api-container -p ${HOST_PORT}:${HOST_PORT} ${DOCKER_IMAGE}:${DOCKER_TAG}"
                     
-                    // Increase the timeout to allow the container to start
-                    bat "timeout /t 30 /nobreak"
-                    
+                    // Use start /wait to delay the execution for 30 seconds
+                    bat "start /wait cmd /c timeout /t 30"
+
                     // Check if the container is running
                     bat "docker ps -a"  // List all containers to check if it's running
                     
