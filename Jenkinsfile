@@ -5,6 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'sofikulmullick/bank-details-api'  // Docker image name
         DOCKER_TAG = 'latest'  // Docker image tag
         HOST_PORT = '8080'  // The port on which to bind the service
+        APP_URL = 'http://localhost:8080'  // The URL of the running API
     }
 
     stages {
@@ -45,8 +46,6 @@ pipeline {
                 }
             }
         }
-
-
 
         stage('Deploy') {
             steps {
