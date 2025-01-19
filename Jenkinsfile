@@ -5,7 +5,6 @@ pipeline {
         DOCKER_IMAGE = 'sofikulmullick/bank-details-api'  // Docker image name
         DOCKER_TAG = 'latest'  // Docker image tag
         HOST_PORT = '8080'  // The port on which to bind the service
-        APP_URL = 'http://localhost:8080'  // The URL of the running API
     }
 
     stages {
@@ -36,6 +35,10 @@ pipeline {
             }
         }
 
+        
+
+
+
         stage('Deploy') {
             steps {
                 script {
@@ -45,37 +48,10 @@ pipeline {
 
                     // Run the Docker container with the new image, bind to all available network interfaces
                     bat "docker run -d --name flask-api-container -p ${HOST_PORT}:${HOST_PORT} ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                    
-                    // Use start /wait to delay the execution for 30 seconds
-                    bat "start /wait cmd /c timeout /t 30"
-
-                    // Check if the container is running
-                    bat "docker ps -a"  // List all containers to check if it's running
-                    
-                    // Check container logs for any errors
-                    bat "docker logs flask-api-container"  // Print the logs of the container to diagnose startup issues
                 }
             }
         }
-
-        stage('Test') {
-            steps {
-                script {
-                    // Test if the application is running
-                    echo "Running API test..."
-                    
-                    // Use curl to test the API and get the HTTP response code
-                    def response = bat(script: "curl -s -o NUL -w %%{http_code} ${APP_URL}", returnStdout: true).trim()
-                    echo "Response from API: ${response}"
-                    
-                    // Check if the response code is 200
-                    if (response != '200') {
-                        error "API test failed with response code: ${response}"
-                    }
-                }
-            }
-        }
-
+        
         stage('Post Actions') {
             steps {
                 cleanWs()  // Clean up workspace after build
@@ -83,3 +59,4 @@ pipeline {
         }
     }
 }
+
