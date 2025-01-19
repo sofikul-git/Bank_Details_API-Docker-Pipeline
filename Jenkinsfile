@@ -38,11 +38,11 @@ pipeline {
             steps {
                 script {
                     // Stop and remove the existing container (Windows compatible)
-                    bat 'docker stop flask-api-container || exit /b 0'
-                    bat 'docker rm flask-api-container || exit /b 0'
+                    bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker stop flask-api-container || exit /b 0'
+                    bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker rm flask-api-container || exit /b 0'
 
                     // Run the Docker container with the new image
-                    bat 'docker run -d --name flask-api-container ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                    bat "docker run -d --name flask-api-container ${DOCKER_IMAGE}:${DOCKER_TAG}"
                 }
             }
         }
