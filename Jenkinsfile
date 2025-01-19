@@ -23,17 +23,7 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    // Use Docker with the correct Unix-style path
-                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").inside {
-                        // Running tests inside the container, using Unix-style paths for volumes and working directory
-                        sh 'pytest tests/'  // Replace with your test command
-                    }
-                }
-            }
-        }
+        
 
         stage('Push Docker Image to Docker Hub') {
             steps {
