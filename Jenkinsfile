@@ -35,6 +35,19 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                script {
+                    // Test if the application is running
+                    echo "Running API test..."
+                    def response = httpRequest(url: "${APP_URL}", validResponseCodes: '200')
+                    echo "Response from API: ${response}"
+                }
+            }
+        }
+
+
+
         stage('Deploy') {
             steps {
                 script {
