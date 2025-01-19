@@ -4,6 +4,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'sofikulmullick/bank-details-api'  // Docker image name
         DOCKER_TAG = 'latest'  // Docker image tag
+        HOST_IP = '10.0.0.108'  // The IP address where the service should be available
+        HOST_PORT = '8080'  // The port on which to bind the service
     }
 
     stages {
@@ -41,8 +43,8 @@ pipeline {
                     bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker stop flask-api-container || exit /b 0'
                     bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker rm flask-api-container || exit /b 0'
 
-                    // Run the Docker container with the new image
-                    bat "docker run -d --name flask-api-container ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    // Run the Docker container with the new image, bind to specific IP and port
+                    bat "docker run -d --name flask-api-container -p ${HOST_IP}:${HOST_PORT}:8080 ${DOCKER_IMAGE}:${DOCKER_TAG}"
                 }
             }
         }
