@@ -40,12 +40,12 @@ pipeline {
             steps {
                 script {
                     // Stop and remove the existing container
-                    sh 'docker stop flask-api-container || true'
-                    sh 'docker rm flask-api-container || true'
+                    bat 'docker stop flask-api-container || true'
+                    bat 'docker rm flask-api-container || true'
 
                     // Run the new Docker container with corrected paths
                     // Convert Windows path to Unix style for Docker to understand
-                    sh """docker run -d --name flask-api-container -p 8080:8080 -v /mnt/c/ProgramData/Jenkins/.jenkins/workspace/Bank_Details_API_CI_CD:/workspace ${DOCKER_IMAGE}:${DOCKER_TAG} bash -c 'cd /workspace && python app.py'"""
+                    bat """docker run -d --name flask-api-container -p 8080:8080 -v /mnt/c/ProgramData/Jenkins/.jenkins/workspace/Bank_Details_API_CI_CD:/workspace ${DOCKER_IMAGE}:${DOCKER_TAG} bash -c 'cd /workspace && python app.py'"""
 
                 }
             }
