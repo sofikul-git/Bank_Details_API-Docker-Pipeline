@@ -31,4 +31,6 @@ COPY . .
 EXPOSE 8080
 
 # Command to run the app
-CMD ["python", "bank_details_Api_dir.py"]
+#CMD ["python", "bank_details_Api_dir.py"]
+CMD ["python", "bank_details_Api_dir.py", "--host", "0.0.0.0", "--port", "8080"]
+
