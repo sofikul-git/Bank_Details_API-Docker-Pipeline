@@ -36,6 +36,28 @@ pipeline {
             }
         }
 
+        stage('Deploy') {
+            steps {
+                script {
+                    // Stop and remove the existing container (Windows compatible)
+                    bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker stop flask-api-container || exit /b 0'
+                    bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker rm flask-api-container || exit /b 0'
+
+                    // Run the Docker container with the new image, bind to all available network interfaces
+                    bat "docker run -d --name flask-api-container -p ${HOST_PORT}:${HOST_PORT} ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    
+                    // Increase the timeout to allow the container to start
+                    bat "timeout /t 30 /nobreak"
+                    
+                    // Check if the container is running
+                    bat "docker ps -a"  // List all containers to check if it's running
+                    
+                    // Check container logs for any errors
+                    bat "docker logs flask-api-container"  // Print the logs of the container to diagnose startup issues
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 script {
@@ -54,19 +76,6 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                script {
-                    // Stop and remove the existing container (Windows compatible)
-                    bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker stop flask-api-container || exit /b 0'
-                    bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker rm flask-api-container || exit /b 0'
-
-                    // Run the Docker container with the new image, bind to all available network interfaces
-                    bat "docker run -d --name flask-api-container -p ${HOST_PORT}:${HOST_PORT} ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                }
-            }
-        }
-        
         stage('Post Actions') {
             steps {
                 cleanWs()  // Clean up workspace after build
