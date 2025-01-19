@@ -41,8 +41,15 @@ pipeline {
                 script {
                     // Test if the application is running
                     echo "Running API test..."
-                    def response = httpRequest(url: "${APP_URL}", validResponseCodes: '200')
+                    
+                    // Use curl to test the API and get the HTTP response code
+                    def response = bat(script: "curl -s -o NUL -w %%{http_code} ${APP_URL}", returnStdout: true).trim()
                     echo "Response from API: ${response}"
+                    
+                    // Check if the response code is 200
+                    if (response != '200') {
+                        error "API test failed with response code: ${response}"
+                    }
                 }
             }
         }
