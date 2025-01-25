@@ -21,7 +21,7 @@ def compare_bank_details1():
 
         # Validate if the file is in the request
         if 'file' not in request.files:
-            return jsonify({'error': 'File is missing'}), 400
+            return jsonify({'error': 'The File is missing'}), 400
 
         # Retrieve the uploaded file directly from the request
         file = request.files['file']
