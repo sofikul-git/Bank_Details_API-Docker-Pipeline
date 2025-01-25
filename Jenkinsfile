@@ -36,18 +36,18 @@ pipeline {
         }
 
         
-
-
-
         stage('Deploy') {
-           steps {
-             script {
+    steps {
+        script {
             // Check if the container exists and remove it (Windows compatible)
             bat '''
             docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul
             if %errorlevel%==0 (
+                echo "Stopping and removing flask-api-container..."
                 docker stop flask-api-container
                 docker rm flask-api-container
+            ) else (
+                echo "No existing container found to stop/remove."
             )
             '''
 
@@ -56,6 +56,7 @@ pipeline {
         }
     }
 }
+
 
 
         
