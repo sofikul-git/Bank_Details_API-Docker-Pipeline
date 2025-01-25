@@ -39,9 +39,12 @@ pipeline {
         stage('Deploy') {
     steps {
         script {
-            // Check if the container exists and remove it (Windows compatible)
+            // Check if the container exists and output the result for debugging
             bat '''
+            echo "Checking for existing container..."
+            docker ps -a -q -f "name=flask-api-container"
             docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul
+            echo "Findstr returned %errorlevel%"
             if %errorlevel%==0 (
                 echo "Stopping and removing flask-api-container..."
                 docker stop flask-api-container
@@ -56,6 +59,7 @@ pipeline {
         }
     }
 }
+
 
 
 
