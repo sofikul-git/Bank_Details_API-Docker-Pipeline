@@ -86,7 +86,7 @@ def compare_bank_details1():
             'account_number': fourteen_or_sixteen_digit_value,
             'ifs_code': ifsc_code_value
         }
-        print("extracted_data from Docker_server ====>>", extracted_data)
+        print("extracted_data from docker server++++====>>", extracted_data)
 
         # Return extracted data as JSON response
         return jsonify(extracted_data)
