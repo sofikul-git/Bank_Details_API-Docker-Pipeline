@@ -43,9 +43,9 @@ pipeline {
             bat '''
             echo "Checking for existing container..."
             docker ps -a -q -f "name=flask-api-container"
-            docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul
-            echo "Findstr returned %errorlevel%"
-            if %errorlevel%==0 (
+            set CONTAINER_ID=$(docker ps -a -q -f "name=flask-api-container")
+            echo "Container ID is: %CONTAINER_ID%"
+            if not "%CONTAINER_ID%"=="" (
                 echo "Stopping and removing flask-api-container..."
                 docker stop flask-api-container
                 docker rm flask-api-container
@@ -59,6 +59,7 @@ pipeline {
         }
     }
 }
+
 
 
 
