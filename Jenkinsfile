@@ -40,17 +40,23 @@ pipeline {
 
 
         stage('Deploy') {
-            steps {
-                script {
-                    // Stop and remove the existing container (Windows compatible)
-                    bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker stop flask-api-container || exit /b 0'
-                    bat 'docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul && docker rm flask-api-container || exit /b 0'
+    steps {
+        script {
+            // Check if the container exists and remove it (Windows compatible)
+            bat '''
+            docker ps -a -q -f "name=flask-api-container" | findstr flask-api-container >nul
+            if %errorlevel%==0 (
+                docker stop flask-api-container
+                docker rm flask-api-container
+            )
+            '''
 
-                    // Run the Docker container with the new image, bind to all available network interfaces
-                    bat "docker run -d --name flask-api-container -p ${HOST_PORT}:${HOST_PORT} ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                }
-            }
+            // Run the Docker container with the new image
+            bat "docker run -d --name flask-api-container -p ${HOST_PORT}:${HOST_PORT} ${DOCKER_IMAGE}:${DOCKER_TAG}"
         }
+    }
+}
+
         
         stage('Post Actions') {
             steps {
