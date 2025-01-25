@@ -42,8 +42,8 @@ pipeline {
             // Check if the container exists and output the result for debugging
             bat '''
             echo "Checking for existing container..."
-            docker ps -a -q -f "name=flask-api-container"
-            set CONTAINER_ID=$(docker ps -a -q -f "name=flask-api-container")
+            set CONTAINER_ID=  // Initialize variable to ensure it's empty
+            for /f %%i in ('docker ps -a -q -f "name=flask-api-container"') do set CONTAINER_ID=%%i
             echo "Container ID is: %CONTAINER_ID%"
             if not "%CONTAINER_ID%"=="" (
                 echo "Stopping and removing flask-api-container..."
@@ -59,6 +59,7 @@ pipeline {
         }
     }
 }
+
 
 
 
